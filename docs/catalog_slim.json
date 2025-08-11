@@ -1,0 +1,151 @@
+{
+    "metadata": {
+        "dbt_schema_version": "https://schemas.getdbt.com/dbt/catalog/v1.json",
+        "dbt_version": "1.7.9",
+        "generated_at": "2024-10-02T19:57:57.127622Z",
+        "invocation_id": "148e149d-b010-48c3-b46b-c1da1a791ed2",
+        "env": {}
+    },
+    "nodes": {
+        "seed.amazon_ads_source_integration_tests.ad_group_history_data": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "ga4_export_integration_tests_1",
+                "name": "ad_group_history_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "last_updated_date": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "last_updated_date",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "creation_date": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "creation_date",
+                    "comment": null
+                },
+                "default_bid": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "default_bid",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "name",
+                    "comment": null
+                },
+                "serving_status": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "serving_status",
+                    "comment": null
+                },
+                "state": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "state",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.amazon_ads_source_integration_tests.ad_group_history_data"
+        },
+        "seed.amazon_ads_source_integration_tests.ad_group_level_report_data": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "ga4_export_integration_tests_1",
+                "name": "ad_group_level_report_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "ad_group_id": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "ad_group_id",
+                    "comment": null
+                },
+                "date": {
+                    "type": "date",
+                    "index": 2,
+                    "name": "date",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "campaign_bidding_strategy": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "campaign_bidding_strategy",
+                    "comment": null
+                },
+                "clicks": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "clicks",
+                    "comment": null
+                },
+                "cost": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "cost",
+                    "comment": null
+                },
+                "impressions": {
+                    "type": "integer",
+                    "index": 7,
+                    "name": "impressions",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.amazon_ads_source_integration_tests.ad_group_level_report_data"
+        }
+    }
+}

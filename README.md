@@ -150,3 +150,220 @@ A special thank you to [Seer Interactive](https://www.seerinteractive.com/?utm_c
 ## Are there any resources available?
 - If you have questions or want to reach out for help, see the [GitHub Issue](https://github.com/fivetran/dbt_amazon_ads_source/issues/new/choose) section to find the right avenue of support for you.
 - If you would like to provide feedback to the dbt package team at Fivetran or would like to request a new dbt package, fill out our [Feedback Form](https://www.surveymonkey.com/r/DQ7K7WW).
+
+
+
+## Goal:
+
+**Goal:** Run `dbt_amazon_ads_source` without real Amazon Ads data from the Fivetran connector by:
+
+* Using **dbt seeds** with example data
+* Leveraging **package-defined tables, column types, and dbt logic**
+* Generating **fake, schema-accurate data** for the staging tables
+* Enabling **all transformations, tests, and docs** to function as if real data existed
+
+**Summary:** *Simulate Amazon Ads source data for `dbt_amazon_ads_source` using seeds and schema-based fake data generation so the package can be run and tested without the Fivetran connector.*
+
+**Step 1:** Create a document that reviews each relevant subdirectory and file in the package, describing:
+
+* How the file’s data or logic could be used to support fake data generation
+* Which files define schemas, tests, or transformation logic that can guide seed creation
+* Any dependencies or references that must be considered when generating or linking the fake data
+
+Alexa: Below is a concise guide to the key parts of this package you can leverage to generate fake, schema-accurate seed data that passes the package’s models and tests.
+
+### Models
+
+- `models/src_amazon_ads.yml`
+  - How it helps: Canonical list of upstream source tables, expected column names, and the `_fivetran_synced` freshness field.
+  - Guides: Source names vs identifiers (e.g., `amazon_ads_ad_group_history_identifier`), required columns, and optional `portfolio_history` via `amazon_ads__portfolio_history_enabled`.
+  - Dependencies: Freshness checks on `_fivetran_synced`; model enabling via `ad_reporting__amazon_ads_enabled`.
+
+- `models/tmp/*.sql` (e.g., `stg_amazon_ads__ad_group_history_tmp.sql`)
+  - How it helps: Shows how each staging model reads its source using `fivetran_utils.union_data`.
+  - Guides: Which table identifiers the package expects (e.g., `ad_group_history`) and which vars control schema/database (`amazon_ads_schema`, `amazon_ads_database`).
+  - Dependencies: If you keep defaults, name seed files to match identifiers or set the identifier vars to your seed filenames.
+
+- `models/stg_*.sql` (e.g., `stg_amazon_ads__ad_group_history.sql`)
+  - How it helps: Shows casts/renames and the exact fields downstream expect (e.g., `id` becomes `ad_group_id`).
+  - Guides: Which columns must be present in seeds and how they’re interpreted; supports selecting plausible value ranges.
+  - Dependencies: Uses macros like `fill_staging_columns` and the per-table `get_*_columns` macro outputs.
+
+- `models/stg_amazon_ads.yml`
+  - How it helps: Centralized tests and final column expectations for each staging model.
+  - Guides: Unique keys and grain for generating coherent data:
+    - Example: `stg_amazon_ads__ad_group_history` unique on `[source_relation, ad_group_id, last_updated_date]`.
+    - Reporting tables are unique on combinations like `[source_relation, ad_group_id, date_day]`.
+  - Dependencies: Use this file to ensure PK uniqueness, FK coverage, daily report grains, and required fields.
+
+- `models/docs.md`
+  - How it helps: Field-level semantics (e.g., what “state”, “serving_status”, “match_type” mean).
+  - Guides: Generate realistic categorical values and consistent metric relationships (clicks, impressions, cost, purchases, sales).
+  - Dependencies: Align enums/values to these definitions to avoid downstream test surprises.
+
+### Macros
+
+- `macros/get_*_columns.sql` (e.g., `get_ad_group_history_columns.sql`)
+  - How it helps: Defines the canonical set of staging columns and expected datatypes for `fill_staging_columns`.
+  - Guides: Ensure your seeds provide at least these columns; use as the ground truth for minimal viable columns.
+  - Dependencies: These columns drive the staging outputs; missing columns lead to nulls or failures depending on model logic/tests.
+
+- `macros/amazon_ads_add_pass_though_columns.sql` and `macros/amazon_ads_fill_pass_through_columns.sql`
+  - How it helps: Implements pass-through metric handling if you set the `amazon_ads__*_passthrough_metrics` vars.
+  - Guides: If you intend to test pass-through metrics, include those extra columns in the corresponding report seeds.
+  - Dependencies: Optional; driven by vars, but seeds must include the extra fields for them to propagate.
+
+### Docs artifacts
+
+- `docs/catalog.json` and `docs/catalog_slim.json`
+  - How it helps: Adapter-native column types and canonical column ordering via `index`.
+  - Guides: Map db types to generators (int/float/date/timestamp/text) and write CSV headers in the order of `index`.
+  - Dependencies: Ensures seeds load with correct coercion/typing across adapters; improves test/build reliability.
+
+- `docs/manifest.json`
+  - How it helps: Full DAG, nodes, refs, and macro lineage.
+  - Guides: Useful to debug dependencies or verify that sources map correctly after seeding.
+  - Dependencies: Optional for generation; helpful for troubleshooting ref/source resolution.
+
+### Integration tests
+
+- `integration_tests/seeds/*.csv`
+  - How it helps: Minimal, working CSV examples for every upstream table (e.g., `ad_group_history_data.csv`).
+  - Guides: Valid headers, sample categorical values, and basic data shapes. Copy or “top up” volume as needed.
+  - Dependencies: If you keep the `_data` suffix, set identifier vars (see below). Good baseline for enums like `state` and `serving_status`.
+
+- `integration_tests/dbt_project.yml`
+  - How it helps: Shows how to point package identifiers at the integration seed filenames and how to set seed column types.
+  - Guides: Patterns to configure:
+    - Identifier remaps (e.g., `amazon_ads_ad_group_history_identifier: "ad_group_history_data"`).
+    - Seeds `+column_types` and `+quote_columns` for stricter adapters.
+    - Example pass-through metrics vars.
+  - Dependencies: Use the same knobs in your root `dbt_project.yml` when reusing the integration seed names.
+
+- `integration_tests/packages.yml` and `integration_tests/requirements.txt`
+  - How it helps: Ensures the right macro packages are available for tests/builds.
+  - Guides: Version alignment for local validation; mirror if you test in a separate environment.
+  - Dependencies: Keep versions compatible with the main `packages.yml`.
+
+### Project config
+
+- `dbt_project.yml` (root)
+  - How it helps: Declares model materializations, default build schema (`+schema: amazon_ads_source`), and exposure of source relations via vars.
+  - Guides: Set `amazon_ads_schema` (and database if needed) to where seeds are built; or build seeds into the default schema that the source expects.
+  - Dependencies: Materialization choice (views/tables) doesn’t change generation, but affects runtime. Freshness behavior comes from `src_amazon_ads.yml`.
+
+- `packages.yml`
+  - How it helps: Declares `fivetran_utils` and `dbt_utils` versions that power macros used across the models.
+  - Guides: Ensure these dependencies are installed before running `dbt seed/build`.
+  - Dependencies: Macro availability for `union_data`, `fill_staging_columns`, and `dbt_utils` tests.
+
+### CI and repo meta
+
+- `.buildkite/`, `.github/`, `.gitignore`, `LICENSE`, `CHANGELOG.md`, `README.md`
+  - How it helps: Reference and CI scaffolding; `README.md` gives high-level behaviors and knobs (e.g., unioning sources, disabling `portfolio_history`).
+  - Guides: Use the README to understand optional features (unioning, pass-through metrics) to decide which columns to include in seeds.
+  - Dependencies: CI configs are not needed for generation, but README-driven options can affect which seeds/columns you must produce.
+
+### Practical dependencies to honor in data generation
+
+- Entity hierarchy and FKs
+  - `profile.id` → `campaign_history.profile_id` → `ad_group_history.campaign_id` → `keyword_history.ad_group_id`, `product_ad_history.ad_group_id`
+  - Reporting tables reference `campaign_id`, `ad_group_id`, and `keyword_id` consistently.
+- Staging uniqueness and grain (from `stg_amazon_ads.yml`)
+  - History tables unique by `[source_relation, <entity_id>, last_updated_date]`
+  - Report tables unique by `[source_relation, <entity_id>, date_day]`
+- Freshness and timestamps
+  - `_fivetran_synced` must be a timestamp; make it recent or disable freshness in `src_amazon_ads.yml`.
+- Optional tables/columns
+  - `portfolio_history` can be disabled via `amazon_ads__portfolio_history_enabled`
+  - Pass-through metrics only required if you set the corresponding vars
+- Column order and types
+  - Use `docs/catalog*.json` to order columns by `index` and to format values per adapter type
+
+Summary
+- Use `src_amazon_ads.yml` for expected source tables and required columns; `stg_*.sql` and `get_*_columns.sql` for how seeds will be consumed and validated; `stg_amazon_ads.yml` for uniqueness and required fields; `docs/catalog*.json` for types and column order; `integration_tests/seeds/*.csv` and `integration_tests/dbt_project.yml` as working patterns for filenames, identifier remaps, and seed typing.
+
+
+**Step 2:** Provide 3 recommendations for how to generate fake data that meets the requirements of the goal and incorporates the most efficient use of this package's resources summarized in step 1. 
+
+Alexa: Here are three efficient, complementary strategies to generate fake, schema-accurate seeds that work seamlessly with this package.
+
+### 1) Template-and-amplify using integration seeds
+- What: Start from `integration_tests/seeds/*.csv` as canonical templates; programmatically append rows.
+- How:
+  - Keep file names with `_data` suffix and set identifier vars in your root `dbt_project.yml` (see `integration_tests/dbt_project.yml`).
+  - Use `docs/catalog_slim.json` (or `docs/catalog.json`) for column order (via `index`) and adapter types; write values accordingly.
+  - Preserve referential integrity across `profile` → `campaign_history` → `ad_group_history` → `keyword_history`/`product_ad_history`. Then generate the daily report tables.
+  - Set `_fivetran_synced` to recent timestamps or temporarily disable freshness in `models/src_amazon_ads.yml`.
+- Why: Lowest effort, reuses vetted headers/enums, aligns with package expectations out of the box.
+
+### 2) Catalog-first, schema-driven generator
+- What: Build a small generator that reads seed nodes from `docs/catalog*.json` and emits fully typed CSVs.
+- How:
+  - Parse nodes with keys starting `seed.`; derive seed names from `node.metadata.name` (or last segment of the key).
+  - Order columns by `columns.*.index`; map types (integer, double precision, date, timestamp, text) to generators and serializers.
+  - Drive relationships and minimal required columns from `models/src_amazon_ads.yml`, uniqueness/grain from `models/stg_amazon_ads.yml`, and per-table datatypes from `macros/get_*_columns.sql`.
+  - Write `<seed_name>.csv` and optionally mirror `+column_types` and `+quote_columns` in `dbt_project.yml` (pattern in `integration_tests/dbt_project.yml`).
+- Why: Most robust and adapter-accurate; scales to all tables without hand-maintaining schemas.
+
+### 3) Test-driven minimal dataset builder
+- What: Generate the smallest coherent dataset that satisfies package tests, then scale up as needed.
+- How:
+  - Use `models/stg_amazon_ads.yml` to determine uniqueness keys and required fields:
+    - History: unique on `[source_relation, <entity_id>, last_updated_date]`
+    - Reports: unique on `[source_relation, <entity_id>, date_day]`
+  - Produce:
+    - A small pool: `profile` (e.g., 2–3), `campaign_history` per profile (2–4), `ad_group_history` per campaign (2–5).
+    - For reports, a short date horizon (e.g., last 10–30 days) with metric invariants (impressions ≥ clicks ≥ 0; cost ≈ clicks * CPC).
+  - Disable `portfolio_history` if not generating it via `amazon_ads__portfolio_history_enabled: False`.
+- Why: Fast to implement and validate; ensures dbt tests pass before adding volume or extra metrics.
+
+Key knobs to set
+- Source resolution: `amazon_ads_schema`, `amazon_ads_database`, and `amazon_ads_*_identifier` (match your seed filenames).
+- Optional features: `amazon_ads__portfolio_history_enabled`, pass-through metrics vars if adding extra fields to report seeds.
+- Freshness: set `_fivetran_synced` recent or disable freshness in `src_amazon_ads.yml`.
+
+- Generated data should align with:
+  - Schemas/types/order from `docs/catalog*.json`
+  - Required columns from `models/src_amazon_ads.yml`
+  - Staging expectations/tests from `models/stg_amazon_ads.yml`
+  - Column sets from `macros/get_*_columns.sql`
+  - Valid enums/examples from `integration_tests/seeds/*`
+
+- After generation: run `dbt seed` then `dbt build` to validate.
+
+- Summary
+  - Use integration seeds as templates and append (quickest).
+  - Or build a catalog-driven generator for full fidelity.
+  - Or start with a minimal, test-driven dataset and expand.
+
+
+  ### Approach 
+
+  Alexa: Simplest path: use the existing integration seeds as templates, map identifiers to them, and run dbt.
+
+- Copy or reference the 11 CSVs in integration_tests/seeds/ as your seeds. Keep the _data filenames.
+- In your root dbt_project.yml, map package identifiers to those filenames and point the package to the schema where seeds will land (usually your target schema). Example:
+  ```yaml
+  vars:
+    amazon_ads_ad_group_history_identifier: "ad_group_history_data"
+    amazon_ads_campaign_history_identifier: "campaign_history_data"
+    amazon_ads_ad_group_level_report_identifier: "ad_group_level_report_data"
+    # ...repeat for all 11 identifiers...
+    amazon_ads_schema: "{{ target.schema }}"
+  seeds:
+    +quote_columns: "{{ true if target.type == 'redshift' else false }}"
+    # Optionally add +column_types mirroring integration_tests/dbt_project.yml for strict adapters
+  ```
+- Run:
+  - dbt seed
+  - dbt build -s amazon_ads_source
+- If you plan to run source freshness, make _fivetran_synced recent in each CSV (or skip freshness runs).
+- To expand data, append rows to these CSVs:
+  - Preserve FKs: profile → campaign_history → ad_group_history → keyword/product_ad_history; reports must reference valid campaign_id/ad_group_id/keyword_id.
+  - Keep report metrics coherent: impressions ≥ clicks ≥ 0; cost ≈ clicks * CPC; purchases_30_d ≤ clicks; sales_30_d ≥ 0.
+
+Summary
+- Reuse integration seeds; map identifiers in your root config; seed and build.
+- Update _fivetran_synced if using freshness.
+- Append more fake data later, maintaining FKs and metric rules.

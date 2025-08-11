@@ -1,0 +1,24 @@
+seed_dir: integration_tests/seeds
+output_dir: seeds
+schema: "{{ target.schema }}"
+identifier_overrides:
+  ad_group_history: ad_group_history_data
+  ad_group_level_report: ad_group_level_report_data
+  advertised_product_report: advertised_product_report_data
+  campaign_history: campaign_history_data
+  campaign_level_report: campaign_level_report_data
+  portfolio_history: portfolio_history_data
+  product_ad_history: product_ad_history_data
+  profile: profile_data
+  keyword_history: keyword_history_data
+  targeting_keyword_report: targeting_keyword_report_data
+  search_term_ad_keyword_report: search_term_ad_keyword_report_data
+row_counts:
+  profile: 3
+  campaign_history: 6
+  ad_group_history: 10
+  keyword_history: 20
+  product_ad_history: 10
+date_ranges:
+  default: ["2024-09-01", "2024-09-14"]
+freshness_mode: recent
