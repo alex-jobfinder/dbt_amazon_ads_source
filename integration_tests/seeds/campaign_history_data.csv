@@ -1,4 +1,4 @@
 id,last_updated_date,_fivetran_synced,bidding_strategy,creation_date,end_date,name,portfolio_id,profile_id,serving_status,start_date,state,targeting_type,budget,budget_type,effective_budget
-2000,2025-08-20 06:03:54.325873,2025-08-20 06:03:54.325875,autoForSales,2025-08-20 06:03:54.325869,,Campaign 2000,,1001,CAMPAIGN_STATUS_ENABLED,2025-07-21,paused,auto,825.17,lifetime,
-2001,2025-08-20 06:03:54.325913,2025-08-20 06:03:54.325915,manual,2025-08-20 06:03:54.325909,,Campaign 2001,,1000,CAMPAIGN_PAUSED,2025-06-10,archived,manual,930.43,daily,
-2002,2025-08-20 06:03:54.325930,2025-08-20 06:03:54.325932,manual,2025-08-20 06:03:54.325927,,Campaign 2002,,1002,CAMPAIGN_STATUS_ENABLED,2025-07-22,paused,manual,255.10,lifetime,
+2000,2025-08-20 06:29:56.414511,2025-08-20 06:29:56.414513,manual,2025-08-20 06:29:56.414507,,Campaign 2000,,1000,CAMPAIGN_STATUS_ENABLED,2025-06-08,archived,auto,316.81,lifetime,
+2001,2025-08-20 06:29:56.414528,2025-08-20 06:29:56.414530,legacyForSales,2025-08-20 06:29:56.414526,,Campaign 2001,,1000,CAMPAIGN_STATUS_ENABLED,2025-07-14,enabled,auto,256.99,daily,
+2002,2025-08-20 06:29:56.414542,2025-08-20 06:29:56.414544,legacyForSales,2025-08-20 06:29:56.414540,,Campaign 2002,,1002,CAMPAIGN_STATUS_ENABLED,2025-05-29,paused,auto,116.53,lifetime,

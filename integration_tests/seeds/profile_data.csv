@@ -1,4 +1,4 @@
 profile_id,account_id,_fivetran_synced,account_marketplace_string_id,account_name,account_sub_type,account_type,account_valid_payment_method,country_code,currency_code,daily_budget,timezone,_fivetran_deleted
-,acct-1000,2025-08-20 06:03:54.324744,ATVPDKIKX0DER,Profile 1000,,,,US,USD,,,
-,acct-1001,2025-08-20 06:03:54.324778,ATVPDKIKX0DER,Profile 1001,,,,US,USD,,,
-,acct-1002,2025-08-20 06:03:54.324785,ATVPDKIKX0DER,Profile 1002,,,,US,USD,,,
+,acct-1000,2025-08-20 06:29:56.413287,ATVPDKIKX0DER,Profile 1000,,,,US,USD,,,
+,acct-1001,2025-08-20 06:29:56.413331,ATVPDKIKX0DER,Profile 1001,,,,US,USD,,,
+,acct-1002,2025-08-20 06:29:56.413342,ATVPDKIKX0DER,Profile 1002,,,,US,USD,,,

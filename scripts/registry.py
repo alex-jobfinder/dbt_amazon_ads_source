@@ -57,8 +57,28 @@ REGISTRY: List[TableSpec] = [
         parents=[("ad_group_history", "id", "ad_group_id"), ("campaign_history", "id", "campaign_id")],
     ),
     TableSpec(
+        "portfolio_history", "portfolio_history_data", "entity", "history",
+        parents=[("campaign_history", "id", "campaign_id")],
+    ),
+    TableSpec(
         "campaign_level_report", "campaign_level_report_data", "report", "daily",
         parents=[("campaign_history", "id", "campaign_id")],
+    ),
+    TableSpec(
+        "ad_group_level_report", "ad_group_level_report_data", "report", "daily",
+        parents=[("ad_group_history", "id", "ad_group_id")],
+    ),
+    TableSpec(
+        "advertised_product_report", "advertised_product_report_data", "report", "daily",
+        parents=[("ad_group_history", "id", "ad_group_id")],
+    ),
+    TableSpec(
+        "search_term_ad_keyword_report", "search_term_ad_keyword_report_data", "report", "daily",
+        parents=[("ad_group_history", "id", "ad_group_id")],
+    ),
+    TableSpec(
+        "targeting_keyword_report", "targeting_keyword_report_data", "report", "daily",
+        parents=[("ad_group_history", "id", "ad_group_id")],
     ),
 ]
 

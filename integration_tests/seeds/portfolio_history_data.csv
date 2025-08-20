@@ -1,2 +1,4 @@
-id,last_updated_date,_fivetran_synced,budget_amount,budget_currency_code,budget_end_date,budget_policy,budget_start_date,creation_date,in_budget,name,profile_id,serving_status,state
-1138,2022-12-05 22:25:00.042000,2022-12-13 15:54:53.894000,,,,,,2022-12-05 22:25:00.042000,true,Empire,66,PORTFOLIO_STATUS_ENABLED,enabled
+id,budget_amount,_fivetran_synced,budget_currency_code,budget_end_date,budget_policy,budget_start_date,creation_date,in_budget,last_updated_date,portfolio_name,profile_id,serving_status,state
+6000,,2025-08-20 06:29:56.417579,,,,,2025-08-20 06:29:56.417568,,2025-08-20 06:29:56.417576,,,,
+6001,,2025-08-20 06:29:56.417587,,,,,2025-08-20 06:29:56.417582,,2025-08-20 06:29:56.417585,,,,
+6002,,2025-08-20 06:29:56.417593,,,,,2025-08-20 06:29:56.417589,,2025-08-20 06:29:56.417591,,,,

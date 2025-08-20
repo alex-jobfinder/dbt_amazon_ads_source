@@ -14,8 +14,15 @@ try:
         generate_ad_group_history,
         generate_keyword_history,
         generate_product_ad_history,
+        generate_portfolio_history,
     )
-    from .generators.reports import generate_campaign_level
+    from .generators.reports import (
+        generate_campaign_level,
+        generate_ad_group_level,
+        generate_advertised_product,
+        generate_search_term_ad_keyword,
+        generate_targeting_keyword,
+    )
 except Exception:
     # Script execution: python scripts/sp_seed.py
     import sys
@@ -28,8 +35,15 @@ except Exception:
         generate_ad_group_history,
         generate_keyword_history,
         generate_product_ad_history,
+        generate_portfolio_history,
     )
-    from generators.reports import generate_campaign_level  # type: ignore
+    from generators.reports import (  # type: ignore
+        generate_campaign_level,
+        generate_ad_group_level,
+        generate_advertised_product,
+        generate_search_term_ad_keyword,
+        generate_targeting_keyword,
+    )
 
 
 def build_header_from_catalog(catalog: Path, model_suffix: str, seed_mapping: Dict[str, str]) -> List[str]:
@@ -68,14 +82,6 @@ def main() -> None:
     campaigns: List[str] = []
     ad_groups: List[str] = []
 
-    # "profile": "stg_amazon_ads__profile",
-
-    # "ad_group_history": "stg_amazon_ads__ad_group_history",
-    # "campaign_history": "stg_amazon_ads__campaign_history",
-    # "keyword_history": "stg_amazon_ads__keyword_history",
-    # "portfolio_history": "stg_amazon_ads__portfolio_history",
-    # "product_ad_history": "stg_amazon_ads__product_ad_history",
-
 
     for spec in selected_specs:
         if spec.kind == "entity":
@@ -111,11 +117,11 @@ def main() -> None:
                 header = build_header_from_catalog(catalog_path, "stg_amazon_ads__product_ad_history", mapping)
                 write_csv(out_dir / f"{spec.seed_name}.csv", header, rows)
 
-            # elif spec.table_name == "portfolio_history":
-            #     rows = generate_portfolio_history(ad_groups, campaigns, args.num_per_parent)
-            #     mapping = {"portfolio_id": "id"}
-            #     header = build_header_from_catalog(catalog_path, "stg_amazon_ads__portfolio_history", mapping)
-            #     write_csv(out_dir / f"{spec.seed_name}.csv", header, rows)
+            elif spec.table_name == "portfolio_history":
+                rows = generate_portfolio_history(campaigns, args.num_per_parent)
+                mapping = {"portfolio_id": "id"}
+                header = build_header_from_catalog(catalog_path, "stg_amazon_ads__portfolio_history", mapping)
+                write_csv(out_dir / f"{spec.seed_name}.csv", header, rows)
 
         elif spec.kind == "report":
             if spec.table_name == "campaign_level_report":
@@ -124,36 +130,29 @@ def main() -> None:
                 rows_iter = generate_campaign_level(campaigns, args.report_days)
                 write_csv(out_dir / f"{spec.seed_name}.csv", header, rows_iter)
             
-            # elif spec.table_name == "ad_group_level_report":
-            #     mapping = {"date_day": "date"}
-            #     header = build_header_from_catalog(catalog_path, "stg_amazon_ads__ad_group_level_report", mapping)
-            #     rows_iter = generate_ad_group_level(ad_groups, args.report_days)
-            #     write_csv(out_dir / f"{spec.seed_name}.csv", header, rows_iter)
+            elif spec.table_name == "ad_group_level_report":
+                mapping = {"date_day": "date"}
+                header = build_header_from_catalog(catalog_path, "stg_amazon_ads__ad_group_level_report", mapping)
+                rows_iter = generate_ad_group_level(ad_groups, args.report_days)
+                write_csv(out_dir / f"{spec.seed_name}.csv", header, rows_iter)
 
-            # elif spec.table_name == "advertised_product_report":
-            #     mapping = {"date_day": "date"}
-            #     header = build_header_from_catalog(catalog_path, "stg_amazon_ads__advertised_product_report", mapping)
-            #     rows_iter = generate_advertised_product(ad_groups, args.report_days)
-            #     write_csv(out_dir / f"{spec.seed_name}.csv", header, rows_iter)
+            elif spec.table_name == "advertised_product_report":
+                mapping = {"date_day": "date"}
+                header = build_header_from_catalog(catalog_path, "stg_amazon_ads__advertised_product_report", mapping)
+                rows_iter = generate_advertised_product(ad_groups, args.report_days)
+                write_csv(out_dir / f"{spec.seed_name}.csv", header, rows_iter)
             
-            # elif spec.table_name == "search_term_ad_keyword_report":
-            #     mapping = {"date_day": "date"}
-            #     header = build_header_from_catalog(catalog_path, "stg_amazon_ads__search_term_ad_keyword_report", mapping)
-            #     rows_iter = generate_search_term_ad_keyword(ad_groups, args.report_days)
-            #     write_csv(out_dir / f"{spec.seed_name}.csv", header, rows_iter)
+            elif spec.table_name == "search_term_ad_keyword_report":
+                mapping = {"date_day": "date"}
+                header = build_header_from_catalog(catalog_path, "stg_amazon_ads__search_term_ad_keyword_report", mapping)
+                rows_iter = generate_search_term_ad_keyword(ad_groups, args.report_days)
+                write_csv(out_dir / f"{spec.seed_name}.csv", header, rows_iter)
             
-            # elif spec.table_name == "targeting_keyword_report":
-            #     mapping = {"date_day": "date"}
-            #     header = build_header_from_catalog(catalog_path, "stg_amazon_ads__targeting_keyword_report", mapping)
-            #     rows_iter = generate_targeting_keyword(ad_groups, args.report_days)
-            #     write_csv(out_dir / f"{spec.seed_name}.csv", header, rows_iter)
-
-
-        # "ad_group_level_report": "stg_amazon_ads__ad_group_level_report",
-        # "advertised_product_report": "stg_amazon_ads__advertised_product_report",
-        # "campaign_level_report": "stg_amazon_ads__campaign_level_report",
-        # "search_term_ad_keyword_report": "stg_amazon_ads__search_term_ad_keyword_report",
-        # "targeting_keyword_report": "stg_amazon_ads__targeting_keyword_report",
+            elif spec.table_name == "targeting_keyword_report":
+                mapping = {"date_day": "date"}
+                header = build_header_from_catalog(catalog_path, "stg_amazon_ads__targeting_keyword_report", mapping)
+                rows_iter = generate_targeting_keyword(ad_groups, args.report_days)
+                write_csv(out_dir / f"{spec.seed_name}.csv", header, rows_iter)
 
     print(f"Wrote seeds to {out_dir}")
 
@@ -162,3 +161,16 @@ if __name__ == "__main__":
     main()
 
 
+# "profile": "stg_amazon_ads__profile",
+
+# "ad_group_history": "stg_amazon_ads__ad_group_history",
+# "campaign_history": "stg_amazon_ads__campaign_history",
+# "keyword_history": "stg_amazon_ads__keyword_history",
+# "portfolio_history": "stg_amazon_ads__portfolio_history",
+# "product_ad_history": "stg_amazon_ads__product_ad_history",
+
+# "ad_group_level_report": "stg_amazon_ads__ad_group_level_report",
+# "advertised_product_report": "stg_amazon_ads__advertised_product_report",
+# "campaign_level_report": "stg_amazon_ads__campaign_level_report",
+# "search_term_ad_keyword_report": "stg_amazon_ads__search_term_ad_keyword_report",
+# "targeting_keyword_report": "stg_amazon_ads__targeting_keyword_report",
