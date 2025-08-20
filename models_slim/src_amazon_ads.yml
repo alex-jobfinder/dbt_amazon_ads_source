@@ -1,0 +1,88 @@
+version: 2
+
+sources:
+  - name: amazon_ads # This source will only be used if you are using a single amazon_ads source connector. If multiple sources are being unioned, their tables will be directly referenced via adapter.get_relation.
+    schema: "{{ var('amazon_ads_schema', 'amazon_ads') }}"
+    database: "{% if target.type != 'spark'%}{{ var('amazon_ads_database', target.database) }}{% endif %}"
+
+    loader: Fivetran
+    loaded_at_field: _fivetran_synced
+
+    config:
+      enabled: "{{ var('ad_reporting__amazon_ads_enabled', true) }}"
+      freshness: 
+        warn_after: {count: 48, period: hour}
+        error_after: {count: 168, period: hour}
+        
+    tables:
+      - name: campaign_history
+        description: Each record represents a campaign in Amazon Ads.
+        identifier: "{{ var('amazon_ads_campaign_history_identifier', 'campaign_history') }}"
+        columns:
+          - name: _fivetran_synced
+            description: "{{ doc('_fivetran_synced') }}"
+          - name: id
+            description: "{{ doc('campaign_id') }}"
+          - name: name
+            description: "{{ doc('campaign_name') }}"
+          - name: creation_date
+            description: "{{ doc('creation_date') }}"
+          - name: last_updated_date
+            description: "{{ doc('last_updated_date') }}"
+          - name: portfolio_id
+            description: "{{ doc('portfolio_id') }}"
+          - name: bidding_strategy
+            description: The bidding strategy associated with a campaign (legacyForSales, autoForSales, or manual.)
+          - name: budget
+            description: The budget for the campaign.
+          - name: budget_type
+            description: "{{ doc('campaign_budget_type') }}"
+          - name: effective_budget
+            description: Adjusted budget for the campaign that has been impacted by a budget rule.
+          - name: end_date
+            description: The end date of the campaign.
+          - name: profile_id
+            description: "{{ doc('profile_id') }}"
+          - name: serving_status
+            description: "{{ doc('serving_status') }}"
+          - name: start_date
+            description: The start date of the campaign.
+          - name: state
+            description: "{{ doc('state') }}"
+          - name: targeting_type
+            description: The type of targeting used for the campaign, either manual or auto.
+
+      - name: campaign_level_report
+        description: Each record in this table represents the daily performance by Amazon campaign.
+        identifier: "{{ var('amazon_ads_campaign_level_report_identifier', 'campaign_level_report') }}"
+        columns:
+          - name: _fivetran_synced
+            description: "{{ doc('_fivetran_synced') }}"
+          - name: date
+            description: "{{ doc('report_date') }}"
+          - name: campaign_id
+            description: "{{ doc('campaign_id') }}"
+          - name: clicks
+            description: "{{ doc('clicks') }}"
+          - name: impressions
+            description: "{{ doc('impressions') }}"
+          - name: cost
+            description: "{{ doc('cost') }}"
+          - name: campaign_applicable_budget_rule_id
+            description: "{{ doc('campaign_applicable_budget_rule_id') }}" 
+          - name: campaign_applicable_budget_rule_name
+            description: "{{ doc('campaign_applicable_budget_rule_name') }}"
+          - name: campaign_bidding_strategy
+            description: "{{ doc('campaign_bidding_strategy') }}"
+          - name: campaign_budget_amount
+            description: "{{ doc('campaign_budget_amount') }}" 
+          - name: campaign_budget_currency_code
+            description: "{{ doc('campaign_budget_currency_code') }}"
+          - name: campaign_budget_type
+            description: "{{ doc('campaign_budget_type') }}"
+          - name: campaign_rule_based_budget_amount
+            description: "{{ doc('campaign_rule_based_budget_amount') }}"
+          - name: purchases_30_d
+            description: "{{ doc('purchases_30_d') }}" 
+          - name: sales_30_d
+            description: "{{ doc('sales_30_d') }}"
