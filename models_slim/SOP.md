@@ -1,13 +1,16 @@
-Alexa: Here’s the lean, end‑to‑end map of how campaigns are generated and tested.
+Alexa: Here’s the lean, end‑to‑end map of how campaigns are generated and tested (catalog‑driven).
 
 ### Generation (SQLite → CSV)
-- • `scripts/sqlite_campaign_seed.py`: Generates seeds from SQLite
-  - Ensure or reset `campaigns` table with `id INTEGER PRIMARY KEY AUTOINCREMENT`.
-  - On reset: drop table, recreate, insert N campaigns starting with `id=1`.
-  - On append: keep table, insert N more campaigns; IDs continue auto-increment.
-  - Fetch all campaigns ordered by `id`.
-  - Write `integration_tests/seeds/campaign_history_data.csv` with required headers (id, dates, enums, budgets).
-  - Write `integration_tests/seeds/campaign_level_report_data.csv` daily rows per campaign with metric invariants.
+- • `scripts/sqlite_campaign_seed.py`: Catalog‑driven seed generator
+  - Uses `--mode reset|append`, `--num-campaigns`, `--report-days`, `--catalog` (defaults to `docs/catalog_slim.json`).
+  - Ensures or resets `campaigns` table with `id INTEGER PRIMARY KEY AUTOINCREMENT`.
+  - Builds CSV headers from `docs/catalog_slim.json` column indexes/types and maps staging names to raw seed names where needed (e.g., `campaign_id → id`, `date_day → date`).
+  - Writes `integration_tests/seeds/campaign_history_data.csv` and `integration_tests/seeds/campaign_level_report_data.csv` with coherent metrics.
+
+- • `scripts/seed_core.py`: Shared helpers used by the generator
+  - SQLite: connect, ensure/reset table.
+  - Catalog: `load_catalog_columns` for (name, type, index).
+  - CSV: typed writer; time/date helpers.
 
 - • `integration_tests/dbt_project.yml`: Wire seeds to models
   - Map identifiers:
@@ -51,7 +54,7 @@ Alexa: Here’s the lean, end‑to‑end map of how campaigns are generated and 
 - • `local/amazon_ads.sqlite`: Runtime DB file created for generation; used in tests within a temp directory.
 
 Summary
-- Generate with `sqlite_campaign_seed.py` (reset/append) → writes `campaign_history_data.csv` and `campaign_level_report_data.csv`.
+- Generate with `sqlite_campaign_seed.py` (catalog‑driven) → writes `campaign_history_data.csv` and `campaign_level_report_data.csv`.
 - dbt `src/tmp/stg` models read the CSVs via identifier vars, cast/rename, and enforce tests.
 - Pytests confirm auto-increment IDs, CSV schema/row counts, date window, and metric invariants.
 

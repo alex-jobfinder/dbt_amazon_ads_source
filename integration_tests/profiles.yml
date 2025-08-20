@@ -1,0 +1,12 @@
+config:
+  send_anonymous_usage_stats: false
+  use_colors: true
+
+integration_tests:
+  target: duckdb
+  outputs:
+    duckdb:
+      type: duckdb
+      path: "/home/alex/dbt_ads/0_dbt_source/dbt_amazon_ads_source/local/amazon_ads.duckdb"
+      schema: "amazon_ads_source_integration_tests_03"
+      threads: 8

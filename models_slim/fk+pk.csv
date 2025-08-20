@@ -1,0 +1,69 @@
+table_name,column_name,data_type,is_primary_key,is_foreign_key,references_table,references_column,column_description
+PROFILE,profile_id,INTEGER,0,1,PROFILE,profile_id,The profile ID associated with your Amazon Ads account. Advertisers who operate in more than one marketplace will have one profile associated with each marketplace.
+AD_GROUP_HISTORY,ad_group_id,INTEGER,0,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+AD_GROUP_HISTORY,campaign_id,INTEGER,0,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+PRODUCT_AD_HISTORY,product_ad_id,INTEGER,1,1,PRODUCT_AD_HISTORY,product_ad_id,
+CAMPAIGN_HISTORY,portfolio_id,INTEGER,0,1,PORTFOLIO_HISTORY,id,The ID of the Portfolio.
+KEYWORD_HISTORY,campaign_id,INTEGER,0,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+KEYWORD_HISTORY,ad_group_id,INTEGER,0,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+PORTFOLIO_HISTORY,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+CAMPAIGN_NEGATIVE_KEYWORD_HISTORY,target_id,INTEGER,1,1,TARGETING_CLAUSE_HISTORY,target_id,
+NEGATIVE_KEYWORD_HISTORY,keyword_id,INTEGER,1,1,KEYWORD_HISTORY,id,The ID of the keyword.
+TARGETING_CLAUSE_HISTORY,target_id,INTEGER,0,1,TARGETING_CLAUSE_HISTORY,target_id,
+CAMPAIGN_PLACEMENT_REPORT,ad_group_id,INTEGER,1,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+CAMPAIGN_PLACEMENT_REPORT,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+CAMPAIGN_PLACEMENT_REPORT,keyword_id,INTEGER,1,1,KEYWORD_HISTORY,id,The ID of the keyword.
+TARGETING_KEYWORD_REPORT,ad_group_id,INTEGER,1,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+TARGETING_KEYWORD_REPORT,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+TARGETING_KEYWORD_REPORT,keyword_id,INTEGER,1,1,KEYWORD_HISTORY,id,The ID of the keyword.
+SEARCH_TERM_AD_KEYWORD_REPORT,ad_group_id,INTEGER,1,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+AD_GROUP_LEVEL_REPORT,ad_id,INTEGER,1,1,PRODUCT_AD_HISTORY,product_ad_id,The ID of the Ad.
+AD_GROUP_LEVEL_REPORT,ad_group_id,INTEGER,1,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+AD_GROUP_LEVEL_REPORT,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+ADVERTISED_PRODUCT_REPORT,ad_group_id,INTEGER,1,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+ADVERTISED_PRODUCT_REPORT,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+ADVERTISED_PRODUCT_REPORT,keyword_id,INTEGER,1,1,KEYWORD_HISTORY,id,The ID of the keyword.
+PURCHASED_PRODUCT_KEYWORD_REPORT,ad_group_id,INTEGER,1,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+PURCHASED_PRODUCT_KEYWORD_REPORT,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+SEARCH_TERM_TARGETING_REPORT,ad_group_id,INTEGER,1,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+SEARCH_TERM_TARGETING_REPORT,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+SEARCH_TERM_TARGETING_REPORT,keyword_id,INTEGER,1,1,TARGETING_EXPRESSION,target_id,The ID of the keyword.
+TARGETING_REPORT,ad_group_id,INTEGER,1,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+TARGETING_REPORT,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+TARGETING_REPORT,keyword_id,INTEGER,1,1,KEYWORD_HISTORY,id,The ID of the keyword.
+PURCHASED_PRODUCT_TARGETING_REPORT,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+CAMPAIGN_NEGATIVE_KEYWORD_SERVING_STATUS_DETAIL,campaign_id,INTEGER,0,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+CAMPAIGN_NEGATIVE_KEYWORD_SERVING_STATUS_DETAIL,ad_group_id,INTEGER,0,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+ASIN_SUGGESTED_KEYWORD,ad_group_id,INTEGER,0,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+ASIN_SUGGESTED_KEYWORD,campaign_id,INTEGER,0,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+PRODUCT_AD_SERVING_STATUS_DETAIL,ad_group_id,INTEGER,0,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+PRODUCT_AD_SERVING_STATUS_DETAIL,campaign_id,INTEGER,0,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+BUDGET_RULE,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+BUDGET_RULE,rule_id,INTEGER,1,1,BUDGET_RULE,rule_id,
+BUDGET_RULE_CAMPAIGN,rule_id,INTEGER,1,1,BUDGET_RULE,rule_id,
+BUDGET_RULE_RECURRENCE_DAY,target_id,INTEGER,0,1,NEGATIVE_TARGETING_CLAUSE_HISTORY,id,
+CAMPAIGN_SERVING_STATUS_DETAIL,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+CAMPAIGN_PLACEMENT_BIDDING,campaign_id,INTEGER,1,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+CAMPAIGN_TAG,ad_group_id,INTEGER,1,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+AD_GROUP_SERVING_STATUS_DETAIL,keyword_id,INTEGER,1,1,KEYWORD_HISTORY,id,The ID of the keyword.
+KEYWORD_SERVING_STATUS_DETAIL,keyword_id,INTEGER,1,1,KEYWORD_HISTORY,id,The ID of the keyword.
+NEGATIVE_KEYWORD_SERVING_STATUS_DETAIL,campaign_id,INTEGER,0,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+TARGETING_SERVING_STATUS_DETAIL,target_id,INTEGER,1,1,TARGETING_CLAUSE_HISTORY,target_id,
+ASIN_THEME_BASED_BID_RECOMMENDATION,parent_id,INTEGER,1,1,ASIN_THEME_BASED_BID_RECOMMENDATION,parent_id,
+ASIN_BID_RECOMMENDATION_VALUE,profile_id,INTEGER,0,1,PROFILE,profile_id,The profile ID associated with your Amazon Ads account. Advertisers who operate in more than one marketplace will have one profile associated with each marketplace.
+ASIN_BID_RECOMMENDATION_VALUE,asin,TEXT,0,1,AD_GROUP_HISTORY,id,
+ASIN_BID_ANALYSIS,ad_group_id,INTEGER,0,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+ASIN_BID_ANALYSIS,campaign_id,INTEGER,0,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+ASIN_BID_ANALYSIS,profile_id,INTEGER,0,1,PROFILE,profile_id,The profile ID associated with your Amazon Ads account. Advertisers who operate in more than one marketplace will have one profile associated with each marketplace.
+AD_GROUP_THEME_BASED_BID_RECOMMENDATION,parent_id,INTEGER,1,1,AD_GROUP_THEME_BASED_BID_RECOMMENDATION,parent_id,
+AD_GROUP_BID_RECOMMENDATION_VALUE,ad_group_id,INTEGER,0,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+AD_GROUP_BID_RECOMMENDATION_VALUE,campaign_id,INTEGER,0,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+AD_GROUP_BID_RECOMMENDATION_VALUE,profile_id,INTEGER,0,1,PROFILE,profile_id,The profile ID associated with your Amazon Ads account. Advertisers who operate in more than one marketplace will have one profile associated with each marketplace.
+AD_GROUP_BID_ANALYSIS,ad_group_id,INTEGER,0,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+AD_GROUP_BID_ANALYSIS,campaign_id,INTEGER,0,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+AD_GROUP_BID_ANALYSIS,profile_id,INTEGER,0,1,PROFILE,profile_id,The profile ID associated with your Amazon Ads account. Advertisers who operate in more than one marketplace will have one profile associated with each marketplace.
+TARGETING_EXPRESSION,target_id,INTEGER,0,1,TARGETING_CLAUSE_HISTORY,target_id,
+TARGETING_RESOLVED_EXPRESSION,ad_group_id,INTEGER,0,1,AD_GROUP_HISTORY,id,The ID of the AdGroup.
+TARGETING_RESOLVED_EXPRESSION,campaign_id,INTEGER,0,1,CAMPAIGN_HISTORY,id,The ID of the Campaign.
+NEGATIVE_TARGETING_EXPRESSION,target_id,INTEGER,0,1,NEGATIVE_TARGETING_CLAUSE_HISTORY,id,
+NEGATIVE_TARGETING_RESOLVED_EXPRESSION,profile_id,INTEGER,0,1,PROFILE,profile_id,The profile ID associated with your Amazon Ads account. Advertisers who operate in more than one marketplace will have one profile associated with each marketplace.

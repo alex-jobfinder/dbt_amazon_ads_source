@@ -56,7 +56,7 @@ CONFIG: Optional[Config] = None
 def _catalog_path() -> Path:
     if CONFIG and CONFIG.catalog_path:
         return CONFIG.catalog_path
-    return Path(__file__).resolve().parents[1] / "docs" / "catalog_slim.json"
+    return Path(__file__).resolve().parents[1] / "docs" / "catalog.json"
 
 
 def _campaign_history_seed_header() -> List[str]:
@@ -228,7 +228,7 @@ def parse_args() -> Config:
     parser.add_argument(
         "--catalog",
         type=str,
-        default=str(Path(__file__).resolve().parents[1] / "docs" / "catalog_slim.json"),
+        default=str(Path(__file__).resolve().parents[1] / "docs" / "catalog.json"),
         help="Path to dbt catalog (slim) json for column order/types",
     )
     args = parser.parse_args()
